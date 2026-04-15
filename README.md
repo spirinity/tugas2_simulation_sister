@@ -2,13 +2,17 @@
 
 Proyek ini adalah sebuah simulasi sistem terdistribusi interaktif yang dirancang untuk mendemonstrasikan dan membandingkan dua model arsitektur komunikasi utama di industri perangkat IoT: **Synchronous Request-Response (HTTP)** dan **Asynchronous Publish-Subscribe (MQTT)**.
 
-Simulasi ini bukan sekadar animasi *frontend* biasa, namun didukung langsung secara nyata oleh *Backend FastAPI (Python)* dan *Message Broker (Mosquitto)*.
+## Penjelasan Model Komunikasi
 
-## Fitur Utama
-* **Animasi Jaringan Real-Time:** Menyelami secara visual pergerakan lintasan *packet data* saat sebuah permintaan dieksekusi antar *node*.
-* **Papan Skor Perbandingan (Dashboard):** Melacak metrik perbandingan murni untuk "Rerata Waktu Eksekusi" antara topologi Sinkron dan Asinkron.
-* **Integrasi IoT Nyata (Full-Stack):** Mengimplementasikan server *REST API* (`/api/reqres/toggle`) dan arsitektur *Pub-Sub* lintas HTTP -> MQTT Socket menggunakan _Python Paho MQTT_ dan _Paho JS WebSocket_.
-* **Antarmuka Premium:** Menggunakan estetika modern berbasis efek *Glassmorphism* dan animasi memukau.
+### 1. Request-Response (Smart Lighting Control)
+Mensimulasikan komunikasi **sinkron 1-to-1** antara klien (Aplikasi HP) dengan Server API. 
+* **Skenario:** Pengguna mengirimkan perintah spesifik untuk menyalakan/mematikan lampu pintar.
+* **Cara Kerja:** Klien (*Mobile App*) mengirim instruksi ke API Server. Sistem klien akan terkunci (menunggu secara sinkron) hingga API Server selesai memproses perintah pada perangkat lampu dan mengembalikan kepastian status keberhasilan (*Response*).
+
+### 2. Publish-Subscribe (Sistem Tanggap Darurat Bencana)
+Mensimulasikan komunikasi **asinkron 1-to-Many** menggunakan protokol MQTT via Mosquitto Broker.
+* **Skenario:** *Smoke Sensor* (Sensor Asap) mendeteksi bahaya dan secara otomatis melepaskan sinyal kewaspadaan ke seluruh ekosistem rumah pintar.
+* **Cara Kerja:** Sensor bertindak sebagai *Publisher* yang mengirimkan "event peringatan darurat" ke *Message Broker*. Broker seketika menembakkan instruksi darurat ini ke ratusan/ribuan *Subscriber* (seperti Sistem Alarm, *Sprinkler/Pemadam*, dan Notifikasi HP) di saat bersamaan. Arsitekturnya kuat, *loosely coupled*, efisien, dan cocok untuk perangkat IoT massal tanpa membuat server kewalahan karena lonjakan balasan pesan tunggal (`Response`).
 
 ---
 
@@ -62,6 +66,3 @@ Proyek ini mengadopsi standar sistem terdistribusi modern di mana setiap titik k
 * `script.js` — Logika *Promise-based* untuk animasi transmisi, kalkulasi skor rekor eksekusi komparatif, dan mesin *Client WebSocket MQTT*.
 * `main.py` — Logika *RESTful Handler* (Uvicorn) dan *Publisher Background Looping*.
 * `mosquitto.conf` — Instruksi porting anonim lokal agar *Browser* diizinkan terkoneksi ria ke broker kita secara lokal.
-
----
-**Dibuat untuk melengkapi parameter penilaian sempurna pada instrumen _"Simulasi Interaktif Model Komunikasi dalam Sistem Terdistribusi"_.**
