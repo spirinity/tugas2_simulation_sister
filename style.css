@@ -1,0 +1,241 @@
+:root {
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --border-soft: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-second: #64748b;
+    --accent: #3b82f6;
+    --danger: #ef4444;
+    --success: #10b981;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+    --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.05);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.app-layout {
+    width: 100%;
+    max-width: 1200px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ================================================= HEADERS & TABS */
+.top-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px 0;
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--bg-card);
+}
+
+.assignment-info {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.assignment-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+    letter-spacing: -0.5px;
+}
+
+.assignment-course {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 4px;
+}
+
+.assignment-student {
+    font-size: 0.85rem;
+    color: var(--text-second);
+    font-weight: 500;
+}
+
+.tab-controls {
+    display: flex;
+    gap: 10px;
+    background: var(--bg-main);
+    padding: 6px;
+    border-radius: 12px;
+    margin-bottom: -1px; /* overlap border */
+}
+
+.tab-btn {
+    appearance: none; border: none; background: transparent;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 500; font-size: 0.9rem;
+    color: var(--text-second);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ================================================= MAIN CANVAS */
+.canvas-area {
+    flex: 1;
+    position: relative;
+    overflow-y: visible;
+    background: var(--bg-main);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sim-view {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    width: 100%;
+    animation: fadeIn 0.3s ease;
+}
+
+.sim-view.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.view-title { text-align: center; margin-bottom: 20px; }
+.view-title h2 { font-size: 1.2rem; font-weight: 600; margin-bottom: 5px; }
+.view-title p { color: var(--text-second); font-size: 0.85rem; }
+
+/* ================================================= TOPOLOGY NODES */
+.topology {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.linear-topology { gap: 40px; }
+.tree-topology { flex-direction: column; gap: 20px; }
+
+.node-level { display: flex; justify-content: center; gap: 80px; width: 100%; }
+
+.node-wrapper {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+
+.label { font-size: 0.8rem; font-weight: 500; color: var(--text-second); }
+
+.node {
+    background: var(--bg-card);
+    border: 1px solid var(--border-soft);
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    display: flex; justify-content: center; align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.node:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+.icon { font-size: 1.8rem; text-align: center; line-height: 1.1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+/* Specific Nodes */
+.phone-node {
+    width: 140px; height: 180px; border-radius: 20px; border: 4px solid #cbd5e1;
+    padding: 8px; align-items: flex-start;
+}
+.ui-screen {
+    width: 100%; height: 100%; background: var(--bg-main); border-radius: 10px;
+    padding: 10px 5px; display: flex; flex-direction: column; gap: 10px; text-align: center; font-size: 0.75rem; font-weight: 500; justify-content: center;
+}
+.hub-node { width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--accent); }
+.device-node, .sensor-node { width: 70px; height: 70px; border-radius: 15px;}
+
+.link-label { font-size: 0.75rem; color: var(--text-second); letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px dashed var(--border-soft); padding-bottom: 4px;}
+
+/* Buttons inside views */
+.action-btn {
+    margin-top: auto; padding: 10px; border: none; background: #e2e8f0; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%;
+}
+.action-btn.danger { background: #fee2e2; color: var(--danger); margin-top: 0; margin-bottom: 15px; }
+.action-btn:hover { filter: brightness(0.95); }
+.action-btn.active { background: var(--success); color: white; }
+
+/* Status Styles */
+.light-icon.on { text-shadow: 0 0 20px #fde047; transform: scale(1.1); transition: 0.2s;}
+.hidden-notif { opacity: 0; transform: translateY(10px); transition: 0.2s; background: var(--danger); color: white; padding: 10px; border-radius: 8px; }
+.hidden-notif.show { opacity: 1; transform: translateY(0); }
+.pop-notif { position: absolute; top: -25px; font-size: 0.7rem; z-index: 10; white-space: nowrap; box-shadow: var(--shadow-md); }
+.active-pulse { animation: pulseBorder 1s infinite alternate; }
+@keyframes pulseBorder { from { border-color: var(--border-soft); box-shadow: 0 0 0; } to { border-color: var(--accent); box-shadow: 0 0 15px rgba(59,130,246,0.3); } }
+
+/* ================================================= FOOTER ANALYTICS */
+.analytics-panel {
+    display: flex;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-soft);
+    height: 180px;
+    flex-shrink: 0;
+}
+
+.panel-section {
+    padding: 15px 25px;
+    border-right: 1px solid var(--border-soft);
+}
+
+.panel-lbl { font-size: 0.75rem; font-weight: 600; color: var(--text-second); text-transform: uppercase; margin-bottom: 15px; display: block; }
+
+.control-box { flex: 1; display:flex; flex-direction:column; justify-content:center; }
+input[type=range] { width: 100%; margin-bottom: 10px; accent-color: var(--accent); }
+.val { font-size: 0.9rem; font-weight: 500; }
+
+.stats-box { flex: 1; display: flex; gap: 30px; align-items: center; }
+.stat-item { display: flex; flex-direction: column; gap: 5px; }
+.stat-lbl { font-size: 0.8rem; color: var(--text-second); }
+.stat-val { font-size: 1.8rem; font-weight: 600; letter-spacing: -1px; }
+.status-indicator { font-size: 1rem; color: var(--accent); font-weight: 500; letter-spacing: 0; }
+
+.log-box { flex: 2; display: flex; flex-direction: column; border-right: none; overflow: hidden; }
+.feed-container {
+    flex: 1; background: var(--bg-main); border-radius: 8px; padding: 12px;
+    font-family: ui-monospace, monospace; font-size: 0.75rem;
+    overflow-y: auto; display: flex; flex-direction: column; gap: 6px;
+    border: 1px solid var(--border-soft); box-shadow: inset var(--shadow-sm);
+}
+
+.log-row { padding: 4px 0; border-bottom: 1px dashed var(--border-soft); }
+.log-row:last-child { border-bottom: none; }
+.log-row.info { color: var(--text-second); }
+.log-row.event { color: var(--text-primary); }
+
+/* ================================================= PACKET LAYER */
+#packetLayer { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index: 100; }
+.packet {
+    position: absolute; width: 10px; height: 10px; border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+.packet.req { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+.packet.res { background: var(--success); box-shadow: 0 0 8px var(--success); }
+.packet.pub { background: var(--text-primary); box-shadow: 0 0 8px var(--text-primary); }
+.packet.sub { background: var(--danger); box-shadow: 0 0 8px var(--danger); }

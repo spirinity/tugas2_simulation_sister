@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home - Interactive Simulation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- App Container minimalist -->
+    <div class="app-layout">
+        
+        <!-- Header & Nav-Tabs -->
+        <header class="top-nav">
+            <div class="assignment-info">
+                <div class="assignment-title">Simulasi Interaktif Model Komunikasi dalam Sistem Terdistribusi</div>
+                <div class="assignment-course">Sistem Paralel dan Terdistribusi</div>
+                <div class="assignment-student">Mahardika Arka - 11231037</div>
+            </div>
+            <div class="tab-controls">
+                <button class="tab-btn active" data-target="view-reqres">Request-Response</button>
+                <button class="tab-btn" data-target="view-pubsub">Publish-Subscribe</button>
+            </div>
+        </header>
+
+        <!-- Kanvas Area Utama (Pusat) -->
+        <main class="canvas-area">
+            
+            <!-- MODEL 1: Request Response -->
+            <div id="view-reqres" class="sim-view active">
+                <div class="view-title">
+                    <h2>Client-Server Topology</h2>
+                    <p>Komunikasi SINKRON dan 1-to-1</p>
+                </div>
+
+                <div class="topology linear-topology">
+                    <!-- Client -->
+                    <div class="node-wrapper">
+                        <div class="node phone-node" id="req-phone">
+                            <div class="ui-screen">
+                                <div>Lampu Ruang Tamu</div>
+                                <button id="btnToggleLight" class="action-btn">Switch OFF</button>
+                            </div>
+                        </div>
+                        <span class="label">Mobile Client</span>
+                    </div>
+
+                    <!-- Diagram Link -->
+                    <div class="link-label">Network Route</div>
+
+                    <!-- Hub -->
+                    <div class="node-wrapper">
+                        <div class="node hub-node" id="req-hub">
+                            <div class="icon">📡</div>
+                        </div>
+                        <span class="label">Smart Hub Server</span>
+                    </div>
+
+                    <!-- Diagram Link -->
+                    <div class="link-label">Network Route</div>
+
+                    <!-- Light -->
+                    <div class="node-wrapper">
+                        <div class="node device-node" id="req-light">
+                            <div class="icon light-icon">💡</div>
+                        </div>
+                        <span class="label">Smart Bulb</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODEL 2: Publish Subscribe -->
+            <div id="view-pubsub" class="sim-view">
+                <div class="view-title">
+                    <h2>Event-Driven Topology</h2>
+                    <p>Komunikasi ASINKRON dan 1-to-Many</p>
+                </div>
+
+                <div class="topology tree-topology">
+                    <!-- Publisher (Top) -->
+                    <div class="node-level level-publisher">
+                        <div class="node-wrapper">
+                            <button id="btnTriggerFire" class="action-btn danger">🔥 Trigger Sensor Asap</button>
+                            <div class="node sensor-node" id="pub-sensor">
+                                <div class="icon">🔘</div>
+                            </div>
+                            <span class="label">Smoke Sensor (Publisher)</span>
+                        </div>
+                    </div>
+
+                    <!-- Broker (Middle) -->
+                    <div class="node-level level-broker">
+                        <div class="node-wrapper">
+                            <div class="node hub-node" id="pub-broker">
+                                <div class="icon">📡</div>
+                            </div>
+                            <span class="label">Event Broker (Hub)</span>
+                        </div>
+                    </div>
+
+                    <!-- Subscribers (Bottom) -->
+                    <div class="node-level level-subscribers">
+                        <div class="node-wrapper">
+                            <div class="node device-node" id="sub-alarm">
+                                <div class="icon">🚨</div>
+                            </div>
+                            <span class="label">Alarm System</span>
+                        </div>
+
+                        <div class="node-wrapper">
+                            <div class="node device-node" id="sub-sprinkler">
+                                <div class="icon">🚿</div>
+                            </div>
+                            <span class="label">Sprinkler</span>
+                        </div>
+
+                        <div class="node-wrapper" style="position: relative;">
+                            <div class="node device-node" id="sub-phone">
+                                <div class="icon">📱</div>
+                            </div>
+                            <div id="sub-notification" class="hidden-notif pop-notif">⚠️ Bencana!</div>
+                            <span class="label">Mobile App</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Panel Kontrol & Metrik (Bawah) -->
+        <footer class="analytics-panel">
+            <div class="panel-section control-box">
+                <label for="latencySlider" class="panel-lbl">Network Latency (Speed)</label>
+                <input type="range" id="latencySlider" min="200" max="2500" step="100" value="800">
+                <span class="val"><span id="latencyValue">800</span>ms</span>
+            </div>
+
+            <div class="panel-section stats-box">
+                <div class="stat-item">
+                    <div class="stat-lbl">Messages</div>
+                    <div class="stat-val" id="metric-msgs">0</div>
+                </div>
+                <!-- METRIK BARU: Execution Time -->
+                <div class="stat-item">
+                    <div class="stat-lbl">Exec. Time</div>
+                    <div class="stat-val" id="metric-time">0 ms</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-lbl">Status</div>
+                    <div class="stat-val status-indicator" id="sim-status">Idle</div>
+                </div>
+            </div>
+
+            <div class="panel-section log-box">
+                <div class="panel-lbl">System Logs Trace</div>
+                <div class="feed-container" id="logContainer">
+                    <div class="log-row info">System initialized. Wait for interaction.</div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Packet Animation Layer -->
+    <div id="packetLayer"></div>
+
+    <!-- Paho MQTT Library for WebSockets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
