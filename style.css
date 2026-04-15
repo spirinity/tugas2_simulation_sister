@@ -230,7 +230,7 @@ input[type=range] { width: 100%; margin-bottom: 10px; accent-color: var(--accent
 .log-row.event { color: var(--text-primary); }
 
 /* ================================================= PACKET LAYER */
-#packetLayer { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index: 100; }
+#packetLayer { position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index: 100; overflow: visible; }
 .packet {
     position: absolute; width: 10px; height: 10px; border-radius: 50%;
     transform: translate(-50%, -50%);
@@ -239,3 +239,71 @@ input[type=range] { width: 100%; margin-bottom: 10px; accent-color: var(--accent
 .packet.res { background: var(--success); box-shadow: 0 0 8px var(--success); }
 .packet.pub { background: var(--text-primary); box-shadow: 0 0 8px var(--text-primary); }
 .packet.sub { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+
+/* ================================================= DASHBOARD SCOREBOARD */
+.stat-comparison {
+    display: flex;
+    gap: 20px;
+    background: rgba(var(--accent), 0.05);
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px dashed var(--border-soft);
+}
+.comp-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.comp-divider {
+    width: 1px;
+    background: var(--border-soft);
+    margin: 0 5px;
+}
+.req-color { color: var(--accent); font-weight: 700; }
+.pub-color { color: var(--danger); font-weight: 700; }
+.hover-tip { border-bottom: 1px dotted var(--text-second); cursor: help; }
+
+/* ================================================= GLASSMORPHISM EXPLANATION */
+.glass-explanation {
+    margin: 40px auto 20px auto;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    text-align: left;
+    max-width: 800px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.glass-explanation:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+.glass-explanation h3 {
+    margin: 0 0 20px 0;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 12px;
+}
+.explanation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+.explanation-item h4 {
+    margin: 0 0 8px 0;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+.explanation-item p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-second);
+}

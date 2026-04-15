@@ -11,6 +11,12 @@ const simStatus = document.getElementById('sim-status');
 const logContainer = document.getElementById('logContainer');
 const packetLayer = document.getElementById('packetLayer');
 
+// Variabel untuk Papan Skor Komparasi
+let reqResHistory = [];
+let pubSubHistory = [];
+const avgReqResEl = document.getElementById('avg-reqres');
+const avgPubSubEl = document.getElementById('avg-pubsub');
+
 // Nodes Req-Res
 const btnToggleLight = document.getElementById('btnToggleLight');
 const reqPhone = document.getElementById('req-phone');
@@ -87,10 +93,10 @@ const sendPacket = (sourceEl, targetEl, packetClass, duration) => {
         const sourceRect = sourceEl.getBoundingClientRect();
         const targetRect = targetEl.getBoundingClientRect();
         
-        const startX = sourceRect.left + sourceRect.width / 2;
-        const startY = sourceRect.top + sourceRect.height / 2;
-        const endX = targetRect.left + targetRect.width / 2;
-        const endY = targetRect.top + targetRect.height / 2;
+        const startX = sourceRect.left + sourceRect.width / 2 + window.scrollX;
+        const startY = sourceRect.top + sourceRect.height / 2 + window.scrollY;
+        const endX = targetRect.left + targetRect.width / 2 + window.scrollX;
+        const endY = targetRect.top + targetRect.height / 2 + window.scrollY;
         
         packet.style.left = `${startX}px`;
         packet.style.top = `${startY}px`;
@@ -122,11 +128,11 @@ btnToggleLight.addEventListener('click', async () => {
     isSimulationRunning = true;
     
     // Lock UI
-    metricTime.textContent = "Processing...";
+    metricTime.textContent = "Memproses...";
     btnToggleLight.disabled = true;
-    btnToggleLight.textContent = "Processing...";
+    btnToggleLight.textContent = "Memproses...";
     btnToggleLight.style.opacity = "0.5";
-    setStatus('Req-Res Running', 'var(--accent)');
+    setStatus('Req-Res Berjalan', 'var(--accent)');
     
     const t0 = performance.now();
     addLog(`[Client] Mengirim HTTP POST request ke FastAPI Hub...`);
@@ -180,10 +186,17 @@ btnToggleLight.addEventListener('click', async () => {
     // Unlock UI
     btnToggleLight.disabled = false;
     btnToggleLight.style.opacity = "1";
-    setStatus('Idle');
+    setStatus('Siaga');
     const t1 = performance.now();
-    metricTime.textContent = `${(t1 - t0).toFixed(0)} ms`;
-    addLog(`[Client] Interaksi Request-Response selesai dalam ${(t1 - t0).toFixed(0)} ms.`);
+    const timeTaken = t1 - t0;
+    metricTime.textContent = `${timeTaken.toFixed(0)} ms`;
+    
+    // Update Papan Skor Rekor
+    reqResHistory.push(timeTaken);
+    const avg = reqResHistory.reduce((a, b) => a + b, 0) / reqResHistory.length;
+    avgReqResEl.textContent = `${avg.toFixed(0)} ms`;
+    
+    addLog(`[Client] Interaksi Request-Response selesai dalam ${timeTaken.toFixed(0)} ms.`);
     
     isSimulationRunning = false;
 });
@@ -231,9 +244,16 @@ mqttClient.onMessageArrived = async (message) => {
     await Promise.all([p1, p2, p3]);
     
     const t1 = performance.now();
-    metricTime.textContent = `${(t1 - window.pubsubStartTime).toFixed(0)} ms`;
-    addLog(`[System] Flow MQTT Pub/Sub asinkron selesai diproses dalam ${(t1 - window.pubsubStartTime).toFixed(0)} ms.`);
-    setStatus('Resetting...');
+    const timeTaken = t1 - window.pubsubStartTime;
+    metricTime.textContent = `${timeTaken.toFixed(0)} ms`;
+    
+    // Update Papan Skor Rekor
+    pubSubHistory.push(timeTaken);
+    const avg = pubSubHistory.reduce((a, b) => a + b, 0) / pubSubHistory.length;
+    avgPubSubEl.textContent = `${avg.toFixed(0)} ms`;
+    
+    addLog(`[System] Flow MQTT Pub/Sub asinkron selesai diproses dalam ${timeTaken.toFixed(0)} ms.`);
+    setStatus('Menginisiasi Ulang...');
     
     // Reset status node untuk pemakaian berikutnya
     setTimeout(() => {
@@ -241,7 +261,7 @@ mqttClient.onMessageArrived = async (message) => {
         subSprinkler.querySelector('.icon').textContent = "🚿";
         subNotification.classList.remove('show');
         btnTriggerFire.disabled = false;
-        setStatus('Idle');
+        setStatus('Siaga');
         isSimulationRunning = false;
     }, 3000);
 };
@@ -262,9 +282,9 @@ btnTriggerFire.addEventListener('click', async () => {
     if (isSimulationRunning) return;
     isSimulationRunning = true;
     
-    metricTime.textContent = "Processing...";
+    metricTime.textContent = "Memproses...";
     btnTriggerFire.disabled = true;
-    setStatus('Pub-Sub Running', 'var(--danger)');
+    setStatus('Pub-Sub Berjalan', 'var(--danger)');
     
     window.pubsubStartTime = performance.now();
     addLog(`[Publisher] Sensor terbakar! Memberikan instruksi ke FastAPI untuk menyebarkan sinyal...`);

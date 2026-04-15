@@ -6,6 +6,7 @@
     <title>Smart Home - Interactive Simulation</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:,">
 </head>
 <body>
 
@@ -31,8 +32,8 @@
             <!-- MODEL 1: Request Response -->
             <div id="view-reqres" class="sim-view active">
                 <div class="view-title">
-                    <h2>Client-Server Topology</h2>
-                    <p>Komunikasi SINKRON dan 1-to-1</p>
+                    <h2>Smart Lighting Control</h2>
+                    <p>Skenario: Aplikasi HP mengirimkan instruksi terarah ke Server API untuk mengendalikan lampu pintar secara sinkron dan 1-to-1. Pengguna harus menunggu kepastian status kontrol berhasil.</p>
                 </div>
 
                 <div class="topology linear-topology">
@@ -55,7 +56,7 @@
                         <div class="node hub-node" id="req-hub">
                             <div class="icon">📡</div>
                         </div>
-                        <span class="label">Smart Hub Server</span>
+                        <span class="label">API Server</span>
                     </div>
 
                     <!-- Diagram Link -->
@@ -69,13 +70,22 @@
                         <span class="label">Smart Bulb</span>
                     </div>
                 </div>
+
+                <!-- Penjelasan Konsep Req-Res (Glassmorphism) -->
+                <div class="glass-explanation">
+                    <h3>📘 Konsep Request-Response</h3>
+                    <div class="explanation-item">
+                        <h4>Cara Kerja</h4>
+                        <p>Klien (Mobile App) memulai jalur komunikasi dengan mengirim permintaan spesifik. Server API mendengarkan, memproses tindakan (mengubah state lampu), dan merespons langsung. Koneksi ini <strong>sinkron</strong>; artinya klien terkunci menunggu hingga menerima balasan.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- MODEL 2: Publish Subscribe -->
             <div id="view-pubsub" class="sim-view">
                 <div class="view-title">
-                    <h2>Event-Driven Topology</h2>
-                    <p>Komunikasi ASINKRON dan 1-to-Many</p>
+                    <h2>Sistem Tanggap Darurat Bencana</h2>
+                    <p>Skenario: Sensor Asap melapor ke Broker MQTT, yang kemudian secara serentak (broadcast) "membangunkan" banyak sub-sistem (Alarm, Sprinkler, dan HP) secara asinkron (1-to-Many).</p>
                 </div>
 
                 <div class="topology tree-topology">
@@ -96,7 +106,7 @@
                             <div class="node hub-node" id="pub-broker">
                                 <div class="icon">📡</div>
                             </div>
-                            <span class="label">Event Broker (Hub)</span>
+                            <span class="label">Message Broker (MQTT)</span>
                         </div>
                     </div>
 
@@ -125,6 +135,15 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Penjelasan Konsep Pub-Sub (Glassmorphism) -->
+                <div class="glass-explanation">
+                    <h3>📘 Konsep Publish-Subscribe</h3>
+                    <div class="explanation-item">
+                        <h4>Cara Kerja</h4>
+                        <p>Sensor Suhu/Asap (<i>Publisher</i>) menaruh data bahaya di Message Broker. Broker seketika mencocokkan "pelanggan" (<i>Subscriber</i>), lalu me-<i>broadcast</i> data tersebut ke ketiganya secara paralel. Koneksinya <strong>Asinkron</strong> dan <i>Loosely Coupled</i>.</p>
+                    </div>
+                </div>
             </div>
 
         </main>
@@ -132,31 +151,42 @@
         <!-- Panel Kontrol & Metrik (Bawah) -->
         <footer class="analytics-panel">
             <div class="panel-section control-box">
-                <label for="latencySlider" class="panel-lbl">Network Latency (Speed)</label>
+                <label for="latencySlider" class="panel-lbl">Kecepatan Jaringan (Latensi)</label>
                 <input type="range" id="latencySlider" min="200" max="2500" step="100" value="800">
                 <span class="val"><span id="latencyValue">800</span>ms</span>
             </div>
 
             <div class="panel-section stats-box">
                 <div class="stat-item">
-                    <div class="stat-lbl">Messages</div>
+                    <div class="stat-lbl">Jml Pesan</div>
                     <div class="stat-val" id="metric-msgs">0</div>
                 </div>
-                <!-- METRIK BARU: Execution Time -->
-                <div class="stat-item">
-                    <div class="stat-lbl">Exec. Time</div>
-                    <div class="stat-val" id="metric-time">0 ms</div>
+                <!-- Papan Skor Komparasi -->
+                <div class="stat-comparison">
+                    <div class="comp-item">
+                        <div class="stat-lbl hover-tip" title="Waktu Eksekusi Terakhir">Waktu Eksekusi</div>
+                        <div class="stat-val" id="metric-time">0 ms</div>
+                    </div>
+                    <div class="comp-divider"></div>
+                    <div class="comp-item">
+                        <div class="stat-lbl hover-tip" title="Rata-rata Waktu Response Model Sinkron">Avg Req-Res</div>
+                        <div class="stat-val req-color" id="avg-reqres">-- ms</div>
+                    </div>
+                    <div class="comp-item">
+                        <div class="stat-lbl hover-tip" title="Rata-rata Waktu Response Model Asinkron">Avg Pub-Sub</div>
+                        <div class="stat-val pub-color" id="avg-pubsub">-- ms</div>
+                    </div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-lbl">Status</div>
-                    <div class="stat-val status-indicator" id="sim-status">Idle</div>
+                    <div class="stat-val status-indicator" id="sim-status">Siaga</div>
                 </div>
             </div>
 
             <div class="panel-section log-box">
-                <div class="panel-lbl">System Logs Trace</div>
-                <div class="feed-container" id="logContainer">
-                    <div class="log-row info">System initialized. Wait for interaction.</div>
+                <div class="panel-lbl">Rekaman Log Sistem</div>
+                <div id="logContainer" class="feed-container">
+                    <div class="log-row info">Sistem diinisialisasi. Menunggu interaksi.</div>
                 </div>
             </div>
         </footer>
