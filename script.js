@@ -206,12 +206,12 @@ btnToggleLight.addEventListener('click', async () => {
    ======================================================= */
 
 // MQTT Client Setup via Paho
-const mqttBroker = window.location.hostname || "localhost";
+const mqttHost = window.location.hostname || "127.0.0.1";
 const mqttPort = 9001; 
 const mqttTopic = "smarthome/alert";
 const clientId = "browser_client_" + parseInt(Math.random() * 1000, 10);
 
-const mqttClient = new Paho.MQTT.Client(mqttBroker, mqttPort, "/mqtt", clientId);
+const mqttClient = new Paho.MQTT.Client(mqttHost, mqttPort, "/mqtt", clientId);
 
 mqttClient.onConnectionLost = (responseObject) => {
     if (responseObject.errorCode !== 0) {
