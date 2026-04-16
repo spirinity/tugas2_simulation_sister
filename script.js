@@ -207,7 +207,8 @@ btnToggleLight.addEventListener('click', async () => {
 
 // MQTT Client Setup via Paho
 const mqttHost = window.location.hostname || "127.0.0.1";
-const mqttPort = 9001; 
+const isSecure = window.location.protocol === "https:";
+const mqttPort = isSecure ? 443 : 9001; 
 const mqttTopic = "smarthome/alert";
 const clientId = "browser_client_" + parseInt(Math.random() * 1000, 10);
 
@@ -268,8 +269,9 @@ mqttClient.onMessageArrived = async (message) => {
 
 // Inisialisasi Koneksi Browser ke MQTT
 mqttClient.connect({
+    useSSL: isSecure,
     onSuccess: () => {
-        addLog(`[MQTT Client] Terkoneksi ke Broker MQTT ws://${mqttBroker}:${mqttPort}`);
+        addLog(`[MQTT Client] Terkoneksi ke Broker MQTT ${isSecure ? 'wss' : 'ws'}://${mqttHost}:${mqttPort}`);
         mqttClient.subscribe(mqttTopic);
         addLog(`[MQTT Client] Berlangganan (Subscribed) ke topik: ${mqttTopic}`);
     },
