@@ -2,7 +2,8 @@
 
 Proyek ini adalah sebuah simulasi sistem terdistribusi interaktif yang dirancang untuk mendemonstrasikan dan membandingkan dua model arsitektur komunikasi utama di industri perangkat IoT: **Synchronous Request-Response (HTTP)** dan **Asynchronous Publish-Subscribe (MQTT)**.
 
-Demo Website : simulasi.arka.codes
+## Demo Website:
+[simulasi.arka.codes](http://simulasi.arka.codes)
 
 ## Penjelasan Model Komunikasi
 
